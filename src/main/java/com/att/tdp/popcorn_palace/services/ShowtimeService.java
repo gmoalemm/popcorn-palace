@@ -1,64 +1,100 @@
 package com.att.tdp.popcorn_palace.services;
 
+import com.att.tdp.popcorn_palace.dtos.ShowtimeDTO;
 import com.att.tdp.popcorn_palace.models.Movie;
+import com.att.tdp.popcorn_palace.models.Showtime;
 import com.att.tdp.popcorn_palace.repositories.MovieRepository;
+import com.att.tdp.popcorn_palace.repositories.ShowtimesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
-public class MovieService {
+public class ShowtimeService {
+
+    @Autowired
+    private ShowtimesRepository showtimesRepository;
 
     @Autowired
     private MovieRepository movieRepository;
 
-    // Fetch all movies
-    public List<Movie> getAllMovies() {
-        return movieRepository.findAll();
+    /**
+     * Get a showtime by its unique identifier.
+     *
+     * @param id the ID of the showtime to get.
+     * @return an Optional containing the requested Showtime if found, or an empty Optional if not found.
+     */
+    public Optional<Showtime> getShowtime(Long id) {
+        return showtimesRepository.findById(id);
     }
 
-    // Add a new movie
-    public Movie addMovie(Movie movie) {
-        return movieRepository.save(movie);
+    /**
+     * Add a showtime to the database.
+     * @param showtime a showtime to add.
+     * @return the added showtime.
+     */
+    public Showtime addShowtime(Showtime showtime) {
+        return showtimesRepository.save(showtime);
     }
 
-    // Update an existing movie by title
-    public Movie updateMovieByTitle(String title, Movie movieDetails) {
+    /**
+     * Update some information about a showtime in the database.
+     * @param id the ID of the showtime to update.
+     * @param updates the fields to update and their new values.
+     * @return the updated showtime.
+     */
+    public Showtime updateShowtimeById(Long id, ShowtimeDTO updates) {
         // Find movie by title
-        Movie movie = movieRepository.findByTitle(title)
-                .orElseThrow(() -> new RuntimeException("Movie not found with title: " + title));
+        Showtime showtime = showtimesRepository.findById(id).orElse(null);
+
+        if (showtime == null) {
+            return null;
+        }
 
         // Update fields
 
-        if (movieDetails.getTitle() != null) {
-            movie.setTitle(movieDetails.getTitle());
+        if (updates.getMovieId() != null) {
+            Movie movie = movieRepository.findById(updates.getMovieId()).orElse(null);
+
+            if (movie == null) {
+                return null;
+            }
+
+            showtime.setMovie(movie);
         }
 
-        if (movieDetails.getGenre() != null) {
-            movie.setGenre(movieDetails.getGenre());
+        if (updates.getPrice() != null) {
+            showtime.setPrice(updates.getPrice());
         }
 
-        if (movieDetails.getDuration() != null) {
-            movie.setDuration(movieDetails.getDuration());
+        if (updates.getTheater() != null) {
+            showtime.setTheater(updates.getTheater());
         }
 
-        if (movieDetails.getRating() != null) {
-            movie.setRating(movieDetails.getRating());
+        if (updates.getStartTime() != null) {
+            showtime.setStartTime(updates.getStartTime());
         }
 
-        if (movieDetails.getReleaseYear() != null) {
-            movie.setReleaseYear(movieDetails.getReleaseYear());
+        if (updates.getEndTime() != null) {
+            showtime.setEndTime(updates.getEndTime());
         }
 
-        return movieRepository.save(movie); // Save and return the updated movie
+        return showtimesRepository.save(showtime); // Save and return the updated movie
     }
 
-    // Delete a movie by title
-    public void deleteMovieByTitle(String title) {
-        Movie movie = movieRepository.findByTitle(title)
-                .orElseThrow(() -> new RuntimeException("Movie not found with title: " + title));
+    /**
+     * Deletes a showtime from the database.
+     *
+     * @param id the id of the showtime to delete.
+     */
+    public boolean deleteShowtimeByTitle(Long id) {
+        Showtime showtime = showtimesRepository.findById(id).orElse(null);
 
-        movieRepository.delete(movie); // Delete the movie
+        if (showtime != null) {
+            showtimesRepository.delete(showtime); // Delete the movie
+        }
+
+        return showtime == null;
     }
 }

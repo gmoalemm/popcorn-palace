@@ -1,8 +1,11 @@
 package com.att.tdp.popcorn_palace.dtos;
 import com.att.tdp.popcorn_palace.models.Showtime;
+import jakarta.persistence.Entity;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
+@Data
 public class ShowtimeDTO {
     private final Long id;
     private final Float price;
@@ -14,7 +17,7 @@ public class ShowtimeDTO {
     public ShowtimeDTO(Showtime showtime) {
         this.id = showtime.getId();
         this.price = showtime.getPrice();
-        this.movieId = showtime.getMovieId();
+        this.movieId = showtime.getMovie().getId();
         this.theater = showtime.getTheater();
         this.startTime = showtime.getStartTime();
         this.endTime = showtime.getEndTime();

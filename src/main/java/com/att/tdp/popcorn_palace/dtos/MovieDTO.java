@@ -1,6 +1,8 @@
 package com.att.tdp.popcorn_palace.dtos;
 import com.att.tdp.popcorn_palace.models.Movie;
+import lombok.Data;
 
+@Data
 public class MovieDTO {
     private final Long id;
     private final String title;

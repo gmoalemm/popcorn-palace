@@ -1,4 +1,4 @@
-package com.att.tdp.popcorn_palace.model;
+package com.att.tdp.popcorn_palace.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -10,7 +10,7 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String title;
 
     @Column(nullable = false)
@@ -22,6 +22,6 @@ public class Movie {
     @Column(nullable = false)
     private Float rating;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "release_year")
     private Integer releaseYear;
 }
